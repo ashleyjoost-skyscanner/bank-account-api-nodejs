@@ -37,6 +37,9 @@ export class BankAccount {
   }
 
   transfer(toAccount: BankAccount, amount: number): void {
+    if (!toAccount) {
+      throw new Error('Destination account is required.');
+    }
     if (amount <= 0) {
       throw new Error('Transfer amount must be positive.');
     }

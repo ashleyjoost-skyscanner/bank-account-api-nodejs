@@ -7,7 +7,6 @@ const Header = () => {
       <div className="logo">BankAccountUI</div>
       <nav className="nav-links">
         <Link to="/">Home</Link>
-        <Link to="/privacy">Privacy</Link>
       </nav>
     </header>
   );

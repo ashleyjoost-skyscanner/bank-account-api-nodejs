@@ -84,4 +84,12 @@ describe('BankAccount Model', () => {
     expect(account.balance).toBe(1000);
     expect(anotherAccount.balance).toBe(500);
   });
+
+  it('should throw an error when destination account is null', () => {
+    expect(() => account.transfer(null as unknown as BankAccount, 100)).toThrow('Destination account is required.');
+  });
+
+  it('should throw an error when destination account is undefined', () => {
+    expect(() => account.transfer(undefined as unknown as BankAccount, 100)).toThrow('Destination account is required.');
+  });
 });
