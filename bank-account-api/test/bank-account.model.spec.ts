@@ -51,4 +51,37 @@ describe('BankAccount Model', () => {
     expect(account.balance).toBe(700);
     expect(anotherAccount.balance).toBe(800);
   });
+
+  it('should transfer entire balance correctly', () => {
+    const anotherAccount = new BankAccount(2, '654321', 'Jane Doe', 0);
+    account.transfer(anotherAccount, 1000);
+    expect(account.balance).toBe(0);
+    expect(anotherAccount.balance).toBe(1000);
+  });
+
+  it('should throw an error when transfer amount is zero', () => {
+    const anotherAccount = new BankAccount(2, '654321', 'Jane Doe', 500);
+    expect(() => account.transfer(anotherAccount, 0)).toThrow('Transfer amount must be positive.');
+  });
+
+  it('should throw an error when transfer amount is negative', () => {
+    const anotherAccount = new BankAccount(2, '654321', 'Jane Doe', 500);
+    expect(() => account.transfer(anotherAccount, -100)).toThrow('Transfer amount must be positive.');
+  });
+
+  it('should throw an error when transfer amount exceeds balance', () => {
+    const anotherAccount = new BankAccount(2, '654321', 'Jane Doe', 500);
+    expect(() => account.transfer(anotherAccount, 1500)).toThrow('Insufficient funds.');
+  });
+
+  it('should not modify balances when transfer fails due to insufficient funds', () => {
+    const anotherAccount = new BankAccount(2, '654321', 'Jane Doe', 500);
+    try {
+      account.transfer(anotherAccount, 1500);
+    } catch {
+      // Expected to throw
+    }
+    expect(account.balance).toBe(1000);
+    expect(anotherAccount.balance).toBe(500);
+  });
 });
