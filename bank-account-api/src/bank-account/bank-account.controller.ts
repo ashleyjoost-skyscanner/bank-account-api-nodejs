@@ -71,5 +71,14 @@ export class BankAccountController {
   
     this.bankAccountService.deleteAccount(numericId);
     return res.status(HttpStatus.NO_CONTENT).send(); 
-  }   
+  }
+
+  @Post('transfer')
+  transfer(@Body() body: { fromAccountId: number; toAccountId: number; amount: number }) {
+    if (!body.fromAccountId || !body.toAccountId || !body.amount) {
+      throw new BadRequestException('fromAccountId, toAccountId, and amount are required');
+    }
+    this.bankAccountService.transfer(body.fromAccountId, body.toAccountId, body.amount);
+    return { message: 'Transfer successful' };
+  }
 }

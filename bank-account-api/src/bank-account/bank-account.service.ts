@@ -56,4 +56,22 @@ export class BankAccountService {
   initializeAccounts(accounts: BankAccount[]): void {
     BankAccountService.accounts = accounts;
   }
+
+  transfer(fromAccountId: number, toAccountId: number, amount: number): void {
+    const fromAccount = this.getAccountById(fromAccountId);
+    const toAccount = this.getAccountById(toAccountId);
+    
+    if (!toAccount) {
+      throw new NotFoundException('Destination account is required.');
+    }
+    if (amount <= 0) {
+      throw new BadRequestException('Transfer amount must be positive.');
+    }
+    if (amount > fromAccount.balance) {
+      throw new BadRequestException('Insufficient funds.');
+    }
+    
+    fromAccount.balance -= amount;
+    toAccount.balance += amount;
+  }
 }

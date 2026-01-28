@@ -93,4 +93,36 @@ describe('BankAccount API (e2e)', () => {
   /// When I transfer a valid amount from one account to another
   /// Then the source account balance should decrease, the destination account balance should increase, and I should receive a 200 OK response
   /// </summary>
+  it('/api/BankAccount/transfer (POST) should transfer funds between accounts', async () => {
+    // Get existing accounts
+    const allAccountsResponse = await request(app.getHttpServer())
+      .get('/api/BankAccount')
+      .expect(200);
+    
+    // Use first two accounts for transfer test
+    const sourceAccount = allAccountsResponse.body[0];
+    const destAccount = allAccountsResponse.body[1];
+    const transferAmount = 300;
+    
+    const initialSourceBalance = sourceAccount.balance;
+    const initialDestBalance = destAccount.balance;
+
+    // Transfer funds
+    await request(app.getHttpServer())
+      .post('/api/BankAccount/transfer')
+      .send({ fromAccountId: sourceAccount.id, toAccountId: destAccount.id, amount: transferAmount })
+      .expect(201);
+
+    // Verify source account balance decreased
+    const sourceResponse = await request(app.getHttpServer())
+      .get(`/api/BankAccount/${sourceAccount.id}`)
+      .expect(200);
+    expect(sourceResponse.body.balance).toBe(initialSourceBalance - transferAmount);
+
+    // Verify destination account balance increased
+    const destResponse = await request(app.getHttpServer())
+      .get(`/api/BankAccount/${destAccount.id}`)
+      .expect(200);
+    expect(destResponse.body.balance).toBe(initialDestBalance + transferAmount);
+  });
 });
