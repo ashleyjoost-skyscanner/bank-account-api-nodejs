@@ -28,6 +28,14 @@ describe('BankAccountController', () => {
     expect(controller.getAllAccounts()).toEqual(accounts);
   });
 
+  it('should return all account holders', () => {
+    const holders = ['John Doe', 'Jane Doe'];
+
+    jest.spyOn(service, 'getAccountHolders').mockReturnValue(holders);
+
+    expect(controller.getAccountHolders()).toEqual(holders);
+  });
+
   it('should return a bank account by ID', () => {
     const account = new BankAccount(1, '123', 'John Doe', 1000);
 

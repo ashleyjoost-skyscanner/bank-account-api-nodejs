@@ -9,6 +9,11 @@ export class BankAccountService {
     return BankAccountService.accounts;
   }
 
+  getAccountHolders(): string[] {
+    const holders = BankAccountService.accounts.map(acc => acc.accountHolderName);
+    return [...new Set(holders)];
+  }
+
   getAccountById(id: number): BankAccount {
     const account = BankAccountService.accounts.find(acc => acc.id === id);
     if (!account) throw new NotFoundException(`Account with ID ${id} not found`);

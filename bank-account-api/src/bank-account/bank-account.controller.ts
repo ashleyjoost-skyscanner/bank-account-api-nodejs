@@ -12,6 +12,11 @@ export class BankAccountController {
     return this.bankAccountService.getAllAccounts();
   }
 
+  @Get('holders')
+  getAccountHolders(): string[] {
+    return this.bankAccountService.getAccountHolders();
+  }
+
   @Get(':id')
   getAccountById(@Param('id') id: string): BankAccount {
     return this.bankAccountService.getAccountById(Number(id));

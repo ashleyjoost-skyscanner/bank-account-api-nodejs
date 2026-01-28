@@ -30,6 +30,32 @@ describe('BankAccountService', () => {
     expect(accounts.length).toBe(expectedAccounts.length);
   });
 
+  it('should return unique account holders', () => {
+    // Arrange
+    const accounts = [
+      new BankAccount(1, '123456', 'John Doe', 1000),
+      new BankAccount(2, '654321', 'Jane Doe', 2000),
+      new BankAccount(3, '789012', 'John Doe', 500),
+    ];
+    accounts.forEach((acc) => service.createAccount(acc));
+
+    // Act
+    const holders = service.getAccountHolders();
+
+    // Assert
+    expect(holders.length).toBe(2);
+    expect(holders).toContain('John Doe');
+    expect(holders).toContain('Jane Doe');
+  });
+
+  it('should return empty array when no accounts exist', () => {
+    // Act
+    const holders = service.getAccountHolders();
+
+    // Assert
+    expect(holders).toEqual([]);
+  });
+
   it('should return a bank account by ID', () => {
     // Arrange
     const account = new BankAccount(1, '123456', 'John Doe', 1000);
