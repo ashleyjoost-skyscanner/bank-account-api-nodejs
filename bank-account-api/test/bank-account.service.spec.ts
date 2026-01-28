@@ -56,6 +56,54 @@ describe('BankAccountService', () => {
     expect(holders).toEqual([]);
   });
 
+  it('should search accounts by partial name match', () => {
+    // Arrange
+    const accounts = [
+      new BankAccount(1, '123456', 'John Doe', 1000),
+      new BankAccount(2, '654321', 'Jane Doe', 2000),
+      new BankAccount(3, '789012', 'John Smith', 500),
+    ];
+    accounts.forEach((acc) => service.createAccount(acc));
+
+    // Act
+    const results = service.searchByAccountHolder('John');
+
+    // Assert
+    expect(results.length).toBe(2);
+    expect(results.map(a => a.accountHolderName)).toContain('John Doe');
+    expect(results.map(a => a.accountHolderName)).toContain('John Smith');
+  });
+
+  it('should search accounts case-insensitively', () => {
+    // Arrange
+    const accounts = [
+      new BankAccount(1, '123456', 'John Doe', 1000),
+      new BankAccount(2, '654321', 'Jane Doe', 2000),
+    ];
+    accounts.forEach((acc) => service.createAccount(acc));
+
+    // Act
+    const results = service.searchByAccountHolder('john');
+
+    // Assert
+    expect(results.length).toBe(1);
+    expect(results[0].accountHolderName).toBe('John Doe');
+  });
+
+  it('should return empty array when no accounts match search', () => {
+    // Arrange
+    const accounts = [
+      new BankAccount(1, '123456', 'John Doe', 1000),
+    ];
+    accounts.forEach((acc) => service.createAccount(acc));
+
+    // Act
+    const results = service.searchByAccountHolder('Alice');
+
+    // Assert
+    expect(results).toEqual([]);
+  });
+
   it('should return a bank account by ID', () => {
     // Arrange
     const account = new BankAccount(1, '123456', 'John Doe', 1000);

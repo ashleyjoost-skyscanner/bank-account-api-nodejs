@@ -36,6 +36,20 @@ describe('BankAccountController', () => {
     expect(controller.getAccountHolders()).toEqual(holders);
   });
 
+  it('should search accounts by holder name', () => {
+    const accounts: BankAccount[] = [
+      new BankAccount(1, '123', 'John Doe', 1000)
+    ];
+
+    jest.spyOn(service, 'searchByAccountHolder').mockReturnValue(accounts);
+
+    expect(controller.searchByAccountHolder('John')).toEqual(accounts);
+  });
+
+  it('should throw BadRequestException when search name is empty', () => {
+    expect(() => controller.searchByAccountHolder('')).toThrow();
+  });
+
   it('should return a bank account by ID', () => {
     const account = new BankAccount(1, '123', 'John Doe', 1000);
 

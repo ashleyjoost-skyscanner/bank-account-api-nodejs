@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, BadRequestException, HttpStatus, Res } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query, BadRequestException, HttpStatus, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { BankAccountService } from './bank-account.service';
 import { BankAccount } from './bank-account.model';
@@ -15,6 +15,14 @@ export class BankAccountController {
   @Get('holders')
   getAccountHolders(): string[] {
     return this.bankAccountService.getAccountHolders();
+  }
+
+  @Get('search')
+  searchByAccountHolder(@Query('name') name: string): BankAccount[] {
+    if (!name) {
+      throw new BadRequestException('Search name parameter is required');
+    }
+    return this.bankAccountService.searchByAccountHolder(name);
   }
 
   @Get(':id')

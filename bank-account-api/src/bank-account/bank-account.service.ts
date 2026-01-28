@@ -14,6 +14,13 @@ export class BankAccountService {
     return [...new Set(holders)];
   }
 
+  searchByAccountHolder(name: string): BankAccount[] {
+    const searchTerm = name.toLowerCase();
+    return BankAccountService.accounts.filter(acc => 
+      acc.accountHolderName.toLowerCase().includes(searchTerm)
+    );
+  }
+
   getAccountById(id: number): BankAccount {
     const account = BankAccountService.accounts.find(acc => acc.id === id);
     if (!account) throw new NotFoundException(`Account with ID ${id} not found`);
