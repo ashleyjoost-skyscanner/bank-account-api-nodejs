@@ -4,11 +4,15 @@ import { BankAccountService } from './bank-account/bank-account.service';
 import { BankAccountController } from './bank-account/bank-account.controller';
 import { PrimeService } from './prime/prime.service';
 import { PrimeController } from './prime/prime.controller';
+import { StatisticsService } from './statistics/statistics.service';
+import { StatisticsController } from './statistics/statistics.controller';
+import { LoanService } from './loan/loan.service';
+import { LoanController } from './loan/loan.controller';
 
 @Module({
   imports: [],
-  controllers: [BankAccountController, PrimeController],
-  providers: [BankAccountService, PrimeService],
+  controllers: [BankAccountController, PrimeController, StatisticsController, LoanController],
+  providers: [BankAccountService, PrimeService, StatisticsService, LoanService],
 })
 export class AppModule implements OnModuleInit {
   constructor(private readonly bankAccountService: BankAccountService) {}
