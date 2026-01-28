@@ -2,6 +2,7 @@ import { Module, OnModuleInit } from '@nestjs/common';
 import { BankAccount } from './bank-account/bank-account.model';
 import { BankAccountService } from './bank-account/bank-account.service';
 import { createBankAccount, resetIdCounter } from './bank-account/bank-account.factory';
+import { TransactionType } from './bank-account/transaction-type.enum';
 import { BankAccountController } from './bank-account/bank-account.controller';
 import { PrimeService } from './prime/prime.service';
 import { PrimeController } from './prime/prime.controller';
@@ -45,8 +46,8 @@ export class AppModule implements OnModuleInit {
             let transferAmt = Math.round(Math.random() * fromAcc.balance);
             if (transferAmt > fromAcc.balance) return;
 
-            fromAcc.withdraw(transferAmt, "Debit");
-            toAcc.deposit(transferAmt, "Credit");
+            fromAcc.withdraw(transferAmt, TransactionType.Debit);
+            toAcc.deposit(transferAmt, TransactionType.Credit);
 
             console.log(`Transfer: $${transferAmt} from ${fromAcc.accountNumber} (${fromAcc.accountHolderName}) to ${toAcc.accountNumber} (${toAcc.accountHolderName})`);
           } catch (error) {
