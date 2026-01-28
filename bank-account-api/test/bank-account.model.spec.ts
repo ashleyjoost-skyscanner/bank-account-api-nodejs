@@ -8,6 +8,24 @@ describe('BankAccount Model', () => {
     account = new BankAccount(1, '123456', 'John Doe', 1000);
   });
 
+  it('should create an account with correct properties', () => {
+    const newAccount = new BankAccount(5, '999999', 'Test User', 500);
+    expect(newAccount.id).toBe(5);
+    expect(newAccount.accountNumber).toBe('999999');
+    expect(newAccount.accountHolderName).toBe('Test User');
+    expect(newAccount.balance).toBe(500);
+  });
+
+  it('should allow zero initial balance', () => {
+    const newAccount = new BankAccount(1, '123456', 'John Doe', 0);
+    expect(newAccount.balance).toBe(0);
+  });
+
+  it('should allow negative initial balance', () => {
+    const newAccount = new BankAccount(1, '123456', 'John Doe', -100);
+    expect(newAccount.balance).toBe(-100);
+  });
+
   it('should deposit money correctly with Credit', () => {
     account.deposit(500, TransactionType.Credit);
     expect(account.balance).toBe(1500);
@@ -18,8 +36,25 @@ describe('BankAccount Model', () => {
     expect(account.balance).toBe(1500);
   });
 
-  it('should throw an error when depositing with wrong transaction type', () => {
+  it('should handle decimal deposit amounts correctly', () => {
+    account.deposit(100.5, TransactionType.Credit);
+    expect(account.balance).toBe(1100.5);
+  });
+
+  it('should throw an error when deposit amount is zero', () => {
+    expect(() => account.deposit(0, TransactionType.Credit)).toThrow('Deposit amount must be positive.');
+  });
+
+  it('should throw an error when deposit amount is negative', () => {
+    expect(() => account.deposit(-100, TransactionType.Credit)).toThrow('Deposit amount must be positive.');
+  });
+
+  it('should throw an error when depositing with Debit transaction type', () => {
     expect(() => account.deposit(500, TransactionType.Debit)).toThrow('Transaction type must be Credit or TransferCredit.');
+  });
+
+  it('should throw an error when depositing with ATMDebit transaction type', () => {
+    expect(() => account.deposit(500, TransactionType.ATMDebit)).toThrow('Transaction type must be Credit or TransferCredit.');
   });
 
   it('should withdraw money correctly with Debit', () => {
@@ -37,8 +72,25 @@ describe('BankAccount Model', () => {
     expect(account.balance).toBe(0);
   });
 
-  it('should throw an error when withdrawing with wrong transaction type', () => {
+  it('should handle decimal withdrawal amounts correctly', () => {
+    account.withdraw(100.5, TransactionType.Debit);
+    expect(account.balance).toBe(899.5);
+  });
+
+  it('should throw an error when withdrawal amount is zero', () => {
+    expect(() => account.withdraw(0, TransactionType.Debit)).toThrow('Withdrawal amount must be positive.');
+  });
+
+  it('should throw an error when withdrawal amount is negative', () => {
+    expect(() => account.withdraw(-100, TransactionType.Debit)).toThrow('Withdrawal amount must be positive.');
+  });
+
+  it('should throw an error when withdrawing with Credit transaction type', () => {
     expect(() => account.withdraw(500, TransactionType.Credit)).toThrow('Transaction type must be Debit or ATMDebit.');
+  });
+
+  it('should throw an error when withdrawing with TransferCredit transaction type', () => {
+    expect(() => account.withdraw(500, TransactionType.TransferCredit)).toThrow('Transaction type must be Debit or ATMDebit.');
   });
 
   it('should throw an error when withdrawing more than balance', () => {
@@ -57,6 +109,13 @@ describe('BankAccount Model', () => {
     account.transfer(anotherAccount, 1000);
     expect(account.balance).toBe(0);
     expect(anotherAccount.balance).toBe(1000);
+  });
+
+  it('should handle decimal transfer amounts correctly', () => {
+    const anotherAccount = new BankAccount(2, '654321', 'Jane Doe', 500);
+    account.transfer(anotherAccount, 100.5);
+    expect(account.balance).toBe(899.5);
+    expect(anotherAccount.balance).toBe(600.5);
   });
 
   it('should throw an error when transfer amount is zero', () => {
