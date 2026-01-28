@@ -1,6 +1,7 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import { BankAccount } from './bank-account/bank-account.model';
 import { BankAccountService } from './bank-account/bank-account.service';
+import { createBankAccount, resetIdCounter } from './bank-account/bank-account.factory';
 import { BankAccountController } from './bank-account/bank-account.controller';
 import { PrimeService } from './prime/prime.service';
 import { PrimeController } from './prime/prime.controller';
@@ -28,12 +29,11 @@ export class AppModule implements OnModuleInit {
     ];
     const accounts: BankAccount[] = [];
 
+    resetIdCounter();
     for (let i = 0; i < 20; i++) {
-      const account = new BankAccount(
-        i + 1,
-        `Account ${i}`,
+      const account = createBankAccount(
         names[i % names.length],
-        Math.floor(Math.random() * 10000) + 10
+        Math.floor(Math.random() * 10000) + 10,
       );
       accounts.push(account);
     }

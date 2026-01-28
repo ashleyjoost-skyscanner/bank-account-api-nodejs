@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BankAccountService } from '../src/bank-account/bank-account.service';
-import { BankAccount } from '../src/bank-account/bank-account.model';
+import { createTestAccount } from '../src/bank-account/bank-account.factory';
 
 describe('BankAccountService', () => {
   let service: BankAccountService;
@@ -17,8 +17,8 @@ describe('BankAccountService', () => {
   it('should return all accounts', () => {
     // Arrange
     const expectedAccounts = [
-      new BankAccount(1, '123456', 'John Doe', 1000),
-      new BankAccount(2, '654321', 'Jane Doe', 2000),
+      createTestAccount({ id: 1, accountNumber: '123456', accountHolderName: 'John Doe', balance: 1000 }),
+      createTestAccount({ id: 2, accountNumber: '654321', accountHolderName: 'Jane Doe', balance: 2000 }),
     ];
     
     expectedAccounts.forEach((acc) => service.createAccount(acc));
@@ -33,9 +33,9 @@ describe('BankAccountService', () => {
   it('should return unique account holders', () => {
     // Arrange
     const accounts = [
-      new BankAccount(1, '123456', 'John Doe', 1000),
-      new BankAccount(2, '654321', 'Jane Doe', 2000),
-      new BankAccount(3, '789012', 'John Doe', 500),
+      createTestAccount({ id: 1, accountNumber: '123456', accountHolderName: 'John Doe', balance: 1000 }),
+      createTestAccount({ id: 2, accountNumber: '654321', accountHolderName: 'Jane Doe', balance: 2000 }),
+      createTestAccount({ id: 3, accountNumber: '789012', accountHolderName: 'John Doe', balance: 500 }),
     ];
     accounts.forEach((acc) => service.createAccount(acc));
 
@@ -59,9 +59,9 @@ describe('BankAccountService', () => {
   it('should search accounts by partial name match', () => {
     // Arrange
     const accounts = [
-      new BankAccount(1, '123456', 'John Doe', 1000),
-      new BankAccount(2, '654321', 'Jane Doe', 2000),
-      new BankAccount(3, '789012', 'John Smith', 500),
+      createTestAccount({ id: 1, accountNumber: '123456', accountHolderName: 'John Doe', balance: 1000 }),
+      createTestAccount({ id: 2, accountNumber: '654321', accountHolderName: 'Jane Doe', balance: 2000 }),
+      createTestAccount({ id: 3, accountNumber: '789012', accountHolderName: 'John Smith', balance: 500 }),
     ];
     accounts.forEach((acc) => service.createAccount(acc));
 
@@ -77,8 +77,8 @@ describe('BankAccountService', () => {
   it('should search accounts case-insensitively', () => {
     // Arrange
     const accounts = [
-      new BankAccount(1, '123456', 'John Doe', 1000),
-      new BankAccount(2, '654321', 'Jane Doe', 2000),
+      createTestAccount({ id: 1, accountNumber: '123456', accountHolderName: 'John Doe', balance: 1000 }),
+      createTestAccount({ id: 2, accountNumber: '654321', accountHolderName: 'Jane Doe', balance: 2000 }),
     ];
     accounts.forEach((acc) => service.createAccount(acc));
 
@@ -93,7 +93,7 @@ describe('BankAccountService', () => {
   it('should return empty array when no accounts match search', () => {
     // Arrange
     const accounts = [
-      new BankAccount(1, '123456', 'John Doe', 1000),
+      createTestAccount({ id: 1, accountNumber: '123456', accountHolderName: 'John Doe', balance: 1000 }),
     ];
     accounts.forEach((acc) => service.createAccount(acc));
 
@@ -106,7 +106,7 @@ describe('BankAccountService', () => {
 
   it('should return a bank account by ID', () => {
     // Arrange
-    const account = new BankAccount(1, '123456', 'John Doe', 1000);
+    const account = createTestAccount({ id: 1, accountNumber: '123456', accountHolderName: 'John Doe', balance: 1000 });
     service.createAccount(account);
 
     // Act
@@ -119,7 +119,7 @@ describe('BankAccountService', () => {
 
   it('should create an account', () => {
     // Arrange
-    const account = new BankAccount(1, '123456', 'John Doe', 1000);
+    const account = createTestAccount({ id: 1, accountNumber: '123456', accountHolderName: 'John Doe', balance: 1000 });
 
     // Act
     service.createAccount(account);
@@ -132,7 +132,7 @@ describe('BankAccountService', () => {
 
   it('should update an account', () => {
     // Arrange
-    const account = new BankAccount(1, '123456', 'John Doe', 1000);
+    const account = createTestAccount({ id: 1, accountNumber: '123456', accountHolderName: 'John Doe', balance: 1000 });
     service.createAccount(account);
     account.balance = 1500;
 
@@ -146,7 +146,7 @@ describe('BankAccountService', () => {
 
   it('should delete an account', () => {
     // Arrange
-    const account = new BankAccount(1, '123456', 'John Doe', 1000);
+    const account = createTestAccount({ id: 1, accountNumber: '123456', accountHolderName: 'John Doe', balance: 1000 });
     service.createAccount(account);
 
     // Act
@@ -158,10 +158,10 @@ describe('BankAccountService', () => {
 
   it('should initialize accounts and clear existing ones', () => {
     // Arrange
-    const account1 = new BankAccount(1, '123456', 'John Doe', 1000);
+    const account1 = createTestAccount({ id: 1, accountNumber: '123456', accountHolderName: 'John Doe', balance: 1000 });
     service.createAccount(account1);
     const newAccounts = [
-      new BankAccount(2, '654321', 'Jane Doe', 2000),
+      createTestAccount({ id: 2, accountNumber: '654321', accountHolderName: 'Jane Doe', balance: 2000 }),
     ];
 
     // Act

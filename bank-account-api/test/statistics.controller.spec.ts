@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { StatisticsController } from '../src/statistics/statistics.controller';
 import { StatisticsService } from '../src/statistics/statistics.service';
 import { BankAccountService } from '../src/bank-account/bank-account.service';
-import { BankAccount } from '../src/bank-account/bank-account.model';
+import { createTestAccount } from '../src/bank-account/bank-account.factory';
 import { BadRequestException } from '@nestjs/common';
 
 describe('StatisticsController', () => {
@@ -24,8 +24,8 @@ describe('StatisticsController', () => {
 
   it('should return statistics', () => {
     const accounts = [
-      new BankAccount(1, 'ACC001', 'John Doe', 1000),
-      new BankAccount(2, 'ACC002', 'Jane Doe', 2000),
+      createTestAccount({ id: 1, accountNumber: 'ACC001', accountHolderName: 'John Doe', balance: 1000 }),
+      createTestAccount({ id: 2, accountNumber: 'ACC002', accountHolderName: 'Jane Doe', balance: 2000 }),
     ];
     bankAccountService.initializeAccounts(accounts);
 
@@ -36,7 +36,7 @@ describe('StatisticsController', () => {
   });
 
   it('should return summary', () => {
-    const accounts = [new BankAccount(1, 'ACC001', 'John Doe', 1000)];
+    const accounts = [createTestAccount({ id: 1, accountNumber: 'ACC001', accountHolderName: 'John Doe', balance: 1000 })];
     bankAccountService.initializeAccounts(accounts);
 
     const result = controller.getSummary();
@@ -48,8 +48,8 @@ describe('StatisticsController', () => {
 
   it('should return balance distribution', () => {
     const accounts = [
-      new BankAccount(1, 'ACC001', 'John Doe', 500),
-      new BankAccount(2, 'ACC002', 'Jane Doe', 5500),
+      createTestAccount({ id: 1, accountNumber: 'ACC001', accountHolderName: 'John Doe', balance: 500 }),
+      createTestAccount({ id: 2, accountNumber: 'ACC002', accountHolderName: 'Jane Doe', balance: 5500 }),
     ];
     bankAccountService.initializeAccounts(accounts);
 
@@ -66,9 +66,9 @@ describe('StatisticsController', () => {
 
   it('should return top account holders with custom limit', () => {
     const accounts = [
-      new BankAccount(1, 'ACC001', 'John Doe', 1000),
-      new BankAccount(2, 'ACC002', 'Jane Doe', 2000),
-      new BankAccount(3, 'ACC003', 'Bob Smith', 3000),
+      createTestAccount({ id: 1, accountNumber: 'ACC001', accountHolderName: 'John Doe', balance: 1000 }),
+      createTestAccount({ id: 2, accountNumber: 'ACC002', accountHolderName: 'Jane Doe', balance: 2000 }),
+      createTestAccount({ id: 3, accountNumber: 'ACC003', accountHolderName: 'Bob Smith', balance: 3000 }),
     ];
     bankAccountService.initializeAccounts(accounts);
 

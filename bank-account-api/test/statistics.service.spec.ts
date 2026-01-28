@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StatisticsService } from '../src/statistics/statistics.service';
 import { BankAccountService } from '../src/bank-account/bank-account.service';
-import { BankAccount } from '../src/bank-account/bank-account.model';
+import { createTestAccount } from '../src/bank-account/bank-account.factory';
 
 describe('StatisticsService', () => {
   let service: StatisticsService;
@@ -33,9 +33,9 @@ describe('StatisticsService', () => {
 
     it('should calculate correct statistics for multiple accounts', () => {
       const accounts = [
-        new BankAccount(1, 'ACC001', 'John Doe', 1000),
-        new BankAccount(2, 'ACC002', 'Jane Doe', 2000),
-        new BankAccount(3, 'ACC003', 'Bob Smith', 3000),
+        createTestAccount({ id: 1, accountNumber: 'ACC001', accountHolderName: 'John Doe', balance: 1000 }),
+        createTestAccount({ id: 2, accountNumber: 'ACC002', accountHolderName: 'Jane Doe', balance: 2000 }),
+        createTestAccount({ id: 3, accountNumber: 'ACC003', accountHolderName: 'Bob Smith', balance: 3000 }),
       ];
       bankAccountService.initializeAccounts(accounts);
 
@@ -52,10 +52,10 @@ describe('StatisticsService', () => {
 
     it('should calculate correct median for even number of accounts', () => {
       const accounts = [
-        new BankAccount(1, 'ACC001', 'John Doe', 1000),
-        new BankAccount(2, 'ACC002', 'Jane Doe', 2000),
-        new BankAccount(3, 'ACC003', 'Bob Smith', 3000),
-        new BankAccount(4, 'ACC004', 'Alice Brown', 4000),
+        createTestAccount({ id: 1, accountNumber: 'ACC001', accountHolderName: 'John Doe', balance: 1000 }),
+        createTestAccount({ id: 2, accountNumber: 'ACC002', accountHolderName: 'Jane Doe', balance: 2000 }),
+        createTestAccount({ id: 3, accountNumber: 'ACC003', accountHolderName: 'Bob Smith', balance: 3000 }),
+        createTestAccount({ id: 4, accountNumber: 'ACC004', accountHolderName: 'Alice Brown', balance: 4000 }),
       ];
       bankAccountService.initializeAccounts(accounts);
 
@@ -74,10 +74,10 @@ describe('StatisticsService', () => {
 
     it('should categorize accounts into correct ranges', () => {
       const accounts = [
-        new BankAccount(1, 'ACC001', 'John Doe', 500),
-        new BankAccount(2, 'ACC002', 'Jane Doe', 2000),
-        new BankAccount(3, 'ACC003', 'Bob Smith', 7500),
-        new BankAccount(4, 'ACC004', 'Alice Brown', 15000),
+        createTestAccount({ id: 1, accountNumber: 'ACC001', accountHolderName: 'John Doe', balance: 500 }),
+        createTestAccount({ id: 2, accountNumber: 'ACC002', accountHolderName: 'Jane Doe', balance: 2000 }),
+        createTestAccount({ id: 3, accountNumber: 'ACC003', accountHolderName: 'Bob Smith', balance: 7500 }),
+        createTestAccount({ id: 4, accountNumber: 'ACC004', accountHolderName: 'Alice Brown', balance: 15000 }),
       ];
       bankAccountService.initializeAccounts(accounts);
 
@@ -98,10 +98,10 @@ describe('StatisticsService', () => {
   describe('getTopAccountHolders', () => {
     it('should return top account holders by total balance', () => {
       const accounts = [
-        new BankAccount(1, 'ACC001', 'John Doe', 5000),
-        new BankAccount(2, 'ACC002', 'John Doe', 3000),
-        new BankAccount(3, 'ACC003', 'Jane Doe', 10000),
-        new BankAccount(4, 'ACC004', 'Bob Smith', 2000),
+        createTestAccount({ id: 1, accountNumber: 'ACC001', accountHolderName: 'John Doe', balance: 5000 }),
+        createTestAccount({ id: 2, accountNumber: 'ACC002', accountHolderName: 'John Doe', balance: 3000 }),
+        createTestAccount({ id: 3, accountNumber: 'ACC003', accountHolderName: 'Jane Doe', balance: 10000 }),
+        createTestAccount({ id: 4, accountNumber: 'ACC004', accountHolderName: 'Bob Smith', balance: 2000 }),
       ];
       bankAccountService.initializeAccounts(accounts);
 
@@ -123,8 +123,8 @@ describe('StatisticsService', () => {
 
     it('should calculate average balance per holder', () => {
       const accounts = [
-        new BankAccount(1, 'ACC001', 'John Doe', 4000),
-        new BankAccount(2, 'ACC002', 'John Doe', 6000),
+        createTestAccount({ id: 1, accountNumber: 'ACC001', accountHolderName: 'John Doe', balance: 4000 }),
+        createTestAccount({ id: 2, accountNumber: 'ACC002', accountHolderName: 'John Doe', balance: 6000 }),
       ];
       bankAccountService.initializeAccounts(accounts);
 
@@ -137,7 +137,7 @@ describe('StatisticsService', () => {
   describe('getSummary', () => {
     it('should return complete summary with timestamp', () => {
       const accounts = [
-        new BankAccount(1, 'ACC001', 'John Doe', 1000),
+        createTestAccount({ id: 1, accountNumber: 'ACC001', accountHolderName: 'John Doe', balance: 1000 }),
       ];
       bankAccountService.initializeAccounts(accounts);
 

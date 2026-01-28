@@ -3,6 +3,7 @@ import { BadRequestException } from '@nestjs/common';
 import { BankAccountController } from '../src/bank-account/bank-account.controller';
 import { BankAccountService } from '../src/bank-account/bank-account.service';
 import { BankAccount } from '../src/bank-account/bank-account.model';
+import { createTestAccount } from '../src/bank-account/bank-account.factory';
 
 describe('BankAccountController', () => {
   let controller: BankAccountController;
@@ -20,8 +21,8 @@ describe('BankAccountController', () => {
 
   it('should return all bank accounts', () => {
     const accounts: BankAccount[] = [
-      new BankAccount(1, '123', 'John Doe', 1000),
-      new BankAccount(2, '456', 'Jane Doe', 2000)
+      createTestAccount({ id: 1, accountNumber: '123', accountHolderName: 'John Doe', balance: 1000 }),
+      createTestAccount({ id: 2, accountNumber: '456', accountHolderName: 'Jane Doe', balance: 2000 })
     ];
 
     jest.spyOn(service, 'getAllAccounts').mockReturnValue(accounts);
@@ -39,7 +40,7 @@ describe('BankAccountController', () => {
 
   it('should search accounts by holder name', () => {
     const accounts: BankAccount[] = [
-      new BankAccount(1, '123', 'John Doe', 1000)
+      createTestAccount({ id: 1, accountNumber: '123', accountHolderName: 'John Doe', balance: 1000 })
     ];
 
     jest.spyOn(service, 'searchByAccountHolder').mockReturnValue(accounts);
@@ -52,7 +53,7 @@ describe('BankAccountController', () => {
   });
 
   it('should return a bank account by ID', () => {
-    const account = new BankAccount(1, '123', 'John Doe', 1000);
+    const account = createTestAccount({ id: 1, accountNumber: '123', accountHolderName: 'John Doe', balance: 1000 });
 
     jest.spyOn(service, 'getAccountById').mockReturnValue(account);
 
@@ -60,7 +61,7 @@ describe('BankAccountController', () => {
   });
 
   it('should create a new bank account', () => {
-    const account = new BankAccount(3, '789', 'Alice Doe', 3000);
+    const account = createTestAccount({ id: 3, accountNumber: '789', accountHolderName: 'Alice Doe', balance: 3000 });
 
     jest.spyOn(service, 'createAccount').mockImplementation(() => {});
 
@@ -68,7 +69,7 @@ describe('BankAccountController', () => {
   });
 
   it('should update an existing bank account', () => {
-    const account = new BankAccount(1, '123', 'John Doe Updated', 1500);
+    const account = createTestAccount({ id: 1, accountNumber: '123', accountHolderName: 'John Doe Updated', balance: 1500 });
 
     jest.spyOn(service, 'updateAccount').mockImplementation(() => {});
 
@@ -115,7 +116,7 @@ describe('BankAccountController', () => {
     });
 
     it('should return BAD_REQUEST when updateAccount has ID mismatch', () => {
-      const account = new BankAccount(2, '123', 'John Doe', 1000);
+      const account = createTestAccount({ id: 2, accountNumber: '123', accountHolderName: 'John Doe', balance: 1000 });
       const res = { status: jest.fn().mockReturnThis(), json: jest.fn(), send: jest.fn() } as any;
       
       controller.updateAccount('1', account, res);
@@ -125,7 +126,7 @@ describe('BankAccountController', () => {
     });
 
     it('should return BAD_REQUEST when updateAccount receives invalid ID', () => {
-      const account = new BankAccount(1, '123', 'John Doe', 1000);
+      const account = createTestAccount({ id: 1, accountNumber: '123', accountHolderName: 'John Doe', balance: 1000 });
       const res = { status: jest.fn().mockReturnThis(), json: jest.fn(), send: jest.fn() } as any;
       
       controller.updateAccount('abc', account, res);
