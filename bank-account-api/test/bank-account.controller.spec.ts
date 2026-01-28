@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { BadRequestException } from '@nestjs/common';
 import { BankAccountController } from '../src/bank-account/bank-account.controller';
 import { BankAccountService } from '../src/bank-account/bank-account.service';
 import { BankAccount } from '../src/bank-account/bank-account.model';
@@ -80,5 +81,66 @@ describe('BankAccountController', () => {
 
     const res = { status: jest.fn().mockReturnThis(), json: jest.fn(), send: jest.fn() } as any;
     expect(() => controller.deleteAccount('1', res)).not.toThrow();
+  });
+
+  // Validation tests
+  describe('Input Validation', () => {
+    it('should throw BadRequestException when getAccountById receives invalid ID', () => {
+      expect(() => controller.getAccountById('abc')).toThrow(BadRequestException);
+      expect(() => controller.getAccountById('abc')).toThrow('Invalid account ID');
+    });
+
+    it('should throw BadRequestException when createAccount is missing accountNumber', () => {
+      const account = { accountHolderName: 'John Doe', balance: 1000 } as BankAccount;
+      expect(() => controller.createAccount(account)).toThrow(BadRequestException);
+      expect(() => controller.createAccount(account)).toThrow('Account number is required');
+    });
+
+    it('should throw BadRequestException when createAccount is missing accountHolderName', () => {
+      const account = { accountNumber: '123', balance: 1000 } as BankAccount;
+      expect(() => controller.createAccount(account)).toThrow(BadRequestException);
+      expect(() => controller.createAccount(account)).toThrow('Account holder name is required');
+    });
+
+    it('should throw BadRequestException when createAccount is missing balance', () => {
+      const account = { accountNumber: '123', accountHolderName: 'John Doe' } as BankAccount;
+      expect(() => controller.createAccount(account)).toThrow(BadRequestException);
+      expect(() => controller.createAccount(account)).toThrow('Balance is required');
+    });
+
+    it('should throw BadRequestException when createAccount has negative balance', () => {
+      const account = { accountNumber: '123', accountHolderName: 'John Doe', balance: -100 } as BankAccount;
+      expect(() => controller.createAccount(account)).toThrow(BadRequestException);
+      expect(() => controller.createAccount(account)).toThrow('Balance cannot be negative');
+    });
+
+    it('should return BAD_REQUEST when updateAccount has ID mismatch', () => {
+      const account = new BankAccount(2, '123', 'John Doe', 1000);
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn(), send: jest.fn() } as any;
+      
+      controller.updateAccount('1', account, res);
+      
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Account ID mismatch' });
+    });
+
+    it('should return BAD_REQUEST when updateAccount receives invalid ID', () => {
+      const account = new BankAccount(1, '123', 'John Doe', 1000);
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn(), send: jest.fn() } as any;
+      
+      controller.updateAccount('abc', account, res);
+      
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Account ID mismatch' });
+    });
+
+    it('should return BAD_REQUEST when deleteAccount receives invalid ID', () => {
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn(), send: jest.fn() } as any;
+      
+      controller.deleteAccount('abc', res);
+      
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Invalid account ID' });
+    });
   });
 });

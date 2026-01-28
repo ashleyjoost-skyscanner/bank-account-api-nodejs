@@ -27,11 +27,27 @@ export class BankAccountController {
 
   @Get(':id')
   getAccountById(@Param('id') id: string): BankAccount {
-    return this.bankAccountService.getAccountById(Number(id));
+    const numericId = Number(id);
+    if (isNaN(numericId)) {
+      throw new BadRequestException('Invalid account ID');
+    }
+    return this.bankAccountService.getAccountById(numericId);
   }
 
   @Post()
   createAccount(@Body() account: BankAccount): void {
+    if (!account.accountNumber) {
+      throw new BadRequestException('Account number is required');
+    }
+    if (!account.accountHolderName) {
+      throw new BadRequestException('Account holder name is required');
+    }
+    if (account.balance === undefined || account.balance === null) {
+      throw new BadRequestException('Balance is required');
+    }
+    if (account.balance < 0) {
+      throw new BadRequestException('Balance cannot be negative');
+    }
     this.bankAccountService.createAccount(account);
   }
 
